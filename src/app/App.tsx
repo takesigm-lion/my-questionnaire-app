@@ -7,7 +7,7 @@ import { Button } from './components/Button';
 import { StartScreen } from './components/StartScreen';
 import { LoadingScreen } from './components/LoadingScreen';
 import { SuccessScreen } from './components/SuccessScreen';
-import imgHeader from "figma:asset/2d81624423c51d0e2ba437ff5e9cbc7e0cefe807.png";
+import imgHeader from "../assets/2d81624423c51d0e2ba437ff5e9cbc7e0cefe807.png";
 
 interface FormData {
   // 質問1: サンクスカードの利用頻度
