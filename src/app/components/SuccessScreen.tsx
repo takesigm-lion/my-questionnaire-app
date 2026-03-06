@@ -1,7 +1,7 @@
 import { Button } from './Button';
 import { motion } from 'motion/react';
 import { CheckCircle, Sparkles } from 'lucide-react';
-import imgBackground from "figma:asset/02e155e88ee60979785a629031b98a747e882841.png";
+import imgBackground from "../../assets/02e155e88ee60979785a629031b98a747e882841.png";
 
 interface SuccessScreenProps {
   onBackToStart: () => void;
@@ -117,8 +117,8 @@ function Ripple({ delay }: { delay: number }) {
 
 export function SuccessScreen({ onBackToStart }: SuccessScreenProps) {
   return (
-    <div className="content-stretch flex flex-col items-center justify-center px-[32px] relative size-full min-h-screen" data-name="background">
-      <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBackground} />
+    <div className="content-stretch flex flex-col items-center justify-center px-[32px] relative size-full min-h-screen max-w-[390px] mx-auto" data-name="background">
+      <img alt="" className="absolute inset-0 object-cover pointer-events-none size-full" src={imgBackground} />
       
       <div className="relative shrink-0 w-full max-w-[390px]" data-name="container">
         <div className="flex flex-row items-center size-full">

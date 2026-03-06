@@ -1,5 +1,5 @@
 import svgPaths from "../../imports/svg-yvcwue721v";
-import imgBackground from "figma:asset/02e155e88ee60979785a629031b98a747e882841.png";
+import imgBackground from "../../assets/02e155e88ee60979785a629031b98a747e882841.png";
 
 function Overlay() {
   return <div className="-translate-x-1/2 -translate-y-1/2 absolute bg-[rgba(242,246,249,0.6)] blur-[4px] left-1/2 size-[326px] top-1/2" data-name="overlay" />;
@@ -84,8 +84,8 @@ function Container() {
 
 export function LoadingScreen() {
   return (
-    <div className="content-stretch flex flex-col items-center justify-center px-[32px] relative size-full min-h-screen" data-name="background">
-      <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBackground} />
+    <div className="content-stretch flex flex-col items-center justify-center px-[32px] relative size-full min-h-screen max-w-[390px] mx-auto" data-name="background">
+      <img alt="" className="absolute inset-0 object-cover pointer-events-none size-full" src={imgBackground} />
       <Container />
     </div>
   );
