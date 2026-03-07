@@ -42,6 +42,7 @@
   
   /* グラデーション */
   --gray-gradient: conic-gradient(
+    from 49deg,
     rgba(215, 231, 255, 0.8) 0%,
     rgba(255, 255, 255, 0.8) 2%,
     rgba(215, 231, 255, 0.8) 4%,
@@ -53,6 +54,7 @@
   );
   
   --green-gradient: conic-gradient(
+    from 49deg,
     rgba(166, 255, 203, 0.8) 0%,
     rgba(255, 255, 255, 0.8) 2%,
     rgba(166, 255, 203, 0.8) 4%,
@@ -64,6 +66,7 @@
   );
   
   --silver-gradient: conic-gradient(
+    from 49deg,
     rgba(245, 247, 250, 0.8) 0%,
     rgba(245, 247, 250, 0.8) 4%,
     rgba(233, 234, 235, 0.8) 50%,
@@ -72,6 +75,7 @@
   );
   
   --green-fill-gradient: conic-gradient(
+    from 49deg,
     rgba(236, 255, 244, 0.8) 0%,
     rgba(255, 255, 255, 0.8) 5%,
     rgba(236, 255, 244, 0.8) 10%,
