@@ -1,147 +1,349 @@
 import { Button } from "./Button";
 import { motion } from "motion/react";
 import { CheckCircle, Sparkles } from "lucide-react";
-import imgBackground from "figma:asset/02e155e88ee60979785a629031b98a747e882841.png";
+import imgBackground from "../../assets/02e155e88ee60979785a629031b98a747e882841.png";
+import svgPaths from "../../imports/svg-hq803k1j37";
+import BadgeCheck from "./BadgeCheck";
 
 interface SuccessScreenProps {
   onBackToStart: () => void;
 }
 
-// 紙吹雪のようなパーティクルコンポーネント
-function Confetti({ delay }: { delay: number }) {
-  const randomX = Math.random() * 200 - 100; // より広範囲に
-  const randomStartX = Math.random() * 100; // 画面幅全体から開始
-  const randomRotate = Math.random() * 720; // 2回転
-  const randomScale = Math.random() * 1 + 0.5; // より大きいサイズのバリエーション
-  const randomDuration = Math.random() * 1.5 + 2; // 速度のバリエーション
-  const colors = [
-    "#A6FFCB",
-    "#28D87C",
-    "#A0A9C5",
-    "#F5F7FA",
-    "#FFD700",
-    "#FF69B4",
-    "#00D9FF",
-    "#FF6B9D",
-  ];
-  const randomColor =
-    colors[Math.floor(Math.random() * colors.length)];
-  const shapes = ["rounded-full", "rounded-sm", "rounded-none"]; // 形のバリエーション
-  const randomShape =
-    shapes[Math.floor(Math.random() * shapes.length)];
-
+// 大きな流れ星コンポーネント（左上から右中央に流れる）
+function LargeShootingStar({ delay }: { delay: number }) {
+  const startY = Math.random() * 30; // 画面上部30%の範囲
+  const randomDuration = Math.random() * 0.5 + 2; // 2〜2.5秒
+  const randomSize = Math.random() * 20 + 8; 
+  
+  // 軌跡上に配置する星の影（距離に応じてフェード）
+  const trailStars = Array.from({ length: 8 }, (_, i) => {
+    const progress = i / 8; // 0から1の進行度
+    const opacity = 1 - progress; // 距離が離れるほど透明に
+    const scale = 1 - progress * 0.5; // 距離が離れるほど小さく
+    const xOffset = -30 * (i + 1); // 軌跡に沿ってx方向にオフセット
+    const yOffset = -8 * (i + 1); // 軌跡に沿ってy方向にオフセット
+    
+    return { opacity, scale, xOffset, yOffset, delay: i * 0.05 };
+  });
+  
   return (
     <motion.div
-      className={`absolute w-3 h-3 ${randomShape}`}
+      className="absolute"
       style={{
-        backgroundColor: randomColor,
-        top: "-40px",
-        left: `${randomStartX}%`,
-      }}
-      initial={{
-        opacity: 0,
-        y: -40,
-        x: 0,
-        rotate: 0,
-        scale: 0,
-      }}
-      animate={{
-        opacity: [0, 1, 1, 0.8, 0],
-        y: [0, 150, 300, 450, 600],
-        x: [
-          0,
-          randomX * 0.3,
-          randomX * 0.7,
-          randomX,
-          randomX * 1.2,
-        ],
-        rotate: [0, randomRotate * 0.5, randomRotate],
-        scale: [
-          0,
-          randomScale * 1.2,
-          randomScale,
-          randomScale * 0.8,
-          0,
-        ],
-      }}
-      transition={{
-        duration: randomDuration,
-        delay,
-        ease: "easeOut",
-      }}
-    />
-  );
-}
-
-// バーストエフェクト（中央から放射状に広がる）
-function BurstParticle({
-  delay,
-  angle,
-}: {
-  delay: number;
-  angle: number;
-}) {
-  const distance = Math.random() * 150 + 100;
-  const colors = ["#A6FFCB", "#28D87C", "#FFD700", "#00D9FF"];
-  const randomColor =
-    colors[Math.floor(Math.random() * colors.length)];
-
-  return (
-    <motion.div
-      className="absolute w-2 h-2 rounded-full"
-      style={{
-        backgroundColor: randomColor,
-        left: "50%",
-        top: "50%",
+        top: `${startY}%`,
+        left: "-5%",
       }}
       initial={{
         opacity: 0,
         x: 0,
         y: 0,
-        scale: 0,
       }}
       animate={{
-        opacity: [0, 1, 0],
-        x: Math.cos((angle * Math.PI) / 180) * distance,
-        y: Math.sin((angle * Math.PI) / 180) * distance,
-        scale: [0, 1.5, 0],
+        opacity: [1, 1, 1, 1, 1],
+        x: [0, 150, 300, 450],
+        y: [0, 40, 80, 120],
       }}
       transition={{
-        duration: 1,
+        duration: randomDuration,
         delay,
-        ease: "easeOut",
+        ease: [0.25, 0.1, 0.25, 1],
+        repeat: Infinity,
+        repeatDelay: 3,
       }}
-    />
+    >
+      {/* 軌跡上の星の影 */}
+      {trailStars.map((star, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{
+            width: `${randomSize * 2}px`,
+            height: `${randomSize * 2}px`,
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          initial={{
+            opacity: 0,
+            x: star.xOffset,
+            y: star.yOffset,
+            scale: 0,
+          }}
+          animate={{
+            opacity: [0, star.opacity * 0.6, star.opacity * 0.6, 0],
+            x: [star.xOffset, star.xOffset, star.xOffset, star.xOffset],
+            y: [star.yOffset, star.yOffset, star.yOffset, star.yOffset],
+            scale: [0, star.scale, star.scale, 0],
+          }}
+          transition={{
+            duration: randomDuration,
+            delay: delay + star.delay,
+            ease: [0.25, 0.1, 0.25, 1],
+            repeat: Infinity,
+            repeatDelay: 3,
+          }}
+        >
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22.0018 21.0721">
+            <defs>
+              <linearGradient id={`silver-trail-${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{ stopColor: 'rgba(245, 247, 250, 0.8)', stopOpacity: star.opacity * 0.6 }} />
+                <stop offset="50%" style={{ stopColor: 'rgba(233, 234, 235, 0.8)', stopOpacity: star.opacity * 0.6 }} />
+                <stop offset="100%" style={{ stopColor: 'rgba(245, 247, 250, 0.8)', stopOpacity: star.opacity * 0.6 }} />
+              </linearGradient>
+            </defs>
+            <path
+              d={svgPaths.p18eb980}
+              fill={`url(#silver-trail-${i})`}
+              filter={`drop-shadow(0 0 ${randomSize}px rgba(233, 234, 235, ${star.opacity * 0.4}))`}
+            />
+          </svg>
+        </motion.div>
+      ))}
+      
+      {/* メインの星（星型アイコン） */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: `${randomSize * 2.5}px`,
+          height: `${randomSize * 2.5}px`,
+        }}
+        initial={{ scale: 0, rotate: 0 }}
+        animate={{
+          scale: [0, 1.2, 1, 1, 0.8],
+          rotate: [0, 360, 720, 1080, 1440],
+        }}
+        transition={{
+          duration: randomDuration,
+          delay,
+          ease: [0.25, 0.1, 0.25, 1],
+          repeat: Infinity,
+          repeatDelay: 3,
+        }}
+      >
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22.0018 21.0721">
+          <defs>
+            <linearGradient id="silver-gradient-main" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style={{ stopColor: 'rgba(245, 247, 250, 1)' }} />
+              <stop offset="50%" style={{ stopColor: 'rgba(233, 234, 235, 1)' }} />
+              <stop offset="100%" style={{ stopColor: 'rgba(245, 247, 250, 1)' }} />
+            </linearGradient>
+          </defs>
+          <path
+            d={svgPaths.p18eb980}
+            fill="url(#silver-gradient-main)"
+            stroke="#4A4A4A"
+            strokeWidth="0.5"
+            filter={`drop-shadow(0 0 ${randomSize * 2}px rgba(255, 255, 255, 1)) drop-shadow(0 0 ${randomSize * 4}px rgba(233, 234, 235, 0.8))`}
+          />
+        </svg>
+      </motion.div>
+    </motion.div>
   );
 }
 
-// 波紋エフェクト
-function Ripple({ delay }: { delay: number }) {
+// 流れ星コンポーネント（銀色のキラキラした星が斜めに流れる）
+function ShootingStar({ delay }: { delay: number }) {
+  const randomStartY = Math.random() * 100;
+  const randomStartX = Math.random() * 120 - 20;
+  const randomDuration = Math.random() * 1.5 + 1.5;
+  const randomSize = Math.random() * 20 + 20;
+  const randomDelay = delay + Math.random() * 0.5;
+  
+  // 軌跡上に配置する星の影（距離に応じてフェード）
+  const trailStars = Array.from({ length: 5 }, (_, i) => {
+    const progress = i / 5;
+    const opacity = 1 - progress;
+    const scale = 1 - progress * 0.6;
+    const xOffset = -20 * (i + 1);
+    const yOffset = -12 * (i + 1);
+    
+    return { opacity, scale, xOffset, yOffset, delay: i * 0.05 };
+  });
+  
   return (
     <motion.div
-      className="absolute rounded-full border-4 border-[#28D87C]"
+      className="absolute"
       style={{
-        left: "50%",
-        top: "50%",
-        translateX: "-50%",
-        translateY: "-50%",
+        top: `${randomStartY}%`,
+        left: `${randomStartX}%`,
       }}
       initial={{
-        width: 0,
-        height: 0,
-        opacity: 0.8,
+        opacity: 0,
+        x: 0,
+        y: 0,
       }}
       animate={{
-        width: 300,
-        height: 300,
-        opacity: 0,
+        opacity: [1, 1, 1, 1],
+        x: [0, 150, 250],
+        y: [0, 100, 150],
       }}
       transition={{
-        duration: 1.5,
-        delay,
+        duration: randomDuration,
+        delay: randomDelay,
         ease: "easeOut",
+        repeat: Infinity,
+        repeatDelay: Math.random() * 2 + 1,
       }}
-    />
+    >
+      {/* 軌跡上の星の影 */}
+      {trailStars.map((star, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{
+            width: `${randomSize * 2}px`,
+            height: `${randomSize * 2}px`,
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+          initial={{
+            opacity: 0,
+            x: star.xOffset,
+            y: star.yOffset,
+            scale: 0,
+          }}
+          animate={{
+            opacity: [0, star.opacity * 0.5, star.opacity * 0.5, 0],
+            x: [star.xOffset, star.xOffset, star.xOffset, star.xOffset],
+            y: [star.yOffset, star.yOffset, star.yOffset, star.yOffset],
+            scale: [0, star.scale, star.scale, 0],
+          }}
+          transition={{
+            duration: randomDuration,
+            delay: randomDelay + star.delay,
+            ease: "easeOut",
+            repeat: Infinity,
+            repeatDelay: Math.random() * 2 + 1,
+          }}
+        >
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22.0018 21.0721">
+            <defs>
+              <linearGradient id={`silver-small-trail-${delay}-${i}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{ stopColor: 'rgba(245, 247, 250, 0.8)', stopOpacity: star.opacity * 0.5 }} />
+                <stop offset="50%" style={{ stopColor: 'rgba(233, 234, 235, 0.8)', stopOpacity: star.opacity * 0.5 }} />
+                <stop offset="100%" style={{ stopColor: 'rgba(245, 247, 250, 0.8)', stopOpacity: star.opacity * 0.5 }} />
+              </linearGradient>
+            </defs>
+            <path
+              d={svgPaths.p18eb980}
+              fill="url(#silver-gradient-main)"
+              stroke="#4A4A4A"
+              strokeWidth="0.5"
+              filter={`drop-shadow(0 0 ${randomSize * 2}px rgba(255, 255, 255, 1)) drop-shadow(0 0 ${randomSize * 4}px rgba(233, 234, 235, 0.8))`}
+            />
+          </svg>
+        </motion.div>
+      ))}
+      
+      {/* メインの星（星型アイコン） */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: `${randomSize * 2}px`,
+          height: `${randomSize * 2}px`,
+        }}
+        initial={{ scale: 0, rotate: 0 }}
+        animate={{
+          scale: [0, 1, 1, 0],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: randomDuration,
+          delay: randomDelay,
+          ease: "easeOut",
+          repeat: Infinity,
+          repeatDelay: Math.random() * 2 + 1,
+        }}
+      >
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 22.0018 21.0721">
+          <defs>
+            <linearGradient id={`silver-small-main-${delay}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style={{ stopColor: 'rgba(245, 247, 250, 1)' }} />
+              <stop offset="50%" style={{ stopColor: 'rgba(233, 234, 235, 1)' }} />
+              <stop offset="100%" style={{ stopColor: 'rgba(245, 247, 250, 1)' }} />
+            </linearGradient>
+          </defs>
+          <path
+            d={svgPaths.p18eb980}
+            fill="url(#silver-gradient-main)"
+            stroke="#4A4A4A"
+            strokeWidth="0.5"
+            filter={`drop-shadow(0 0 ${randomSize * 2}px rgba(255, 255, 255, 1)) drop-shadow(0 0 ${randomSize * 4}px rgba(233, 234, 235, 0.8))`}
+          />
+        </svg>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// キラキラ輝く小さな星（点滅）- より明るく目立つ銀色
+function TwinkleStar({ delay }: { delay: number }) {
+  const randomX = Math.random() * 400;
+  const randomY = Math.random() * 400;
+  const randomSize = Math.random() * 2.5 + 1.5; // 少し大きく
+  const randomDuration = Math.random() * 1 + 1;
+  const randomDelay = delay + Math.random() * 2;
+  
+  return (
+    <motion.div
+      className="absolute"
+      style={{
+        left: `${randomX}%`,
+        top: `${randomY}%`,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{
+        opacity: [0, 1, 0.5, 1, 0],
+        scale: [0, 1.5, 1, 1.5, 0],
+      }}
+      transition={{
+        duration: randomDuration,
+        delay: randomDelay,
+        ease: "easeInOut",
+        repeat: Infinity,
+        repeatDelay: Math.random() * 3,
+      }}
+    >
+      <div
+        className="rounded-full"
+        style={{
+          width: `${randomSize}px`,
+          height: `${randomSize}px`,
+          background: "radial-gradient(circle, #FFFFFF 0%, #E8E8E8 60%, #C0C0C0 100%)",
+          boxShadow: `0 0 ${randomSize * 4}px rgba(255, 255, 255, 1), 0 0 ${randomSize * 8}px rgba(220, 220, 220, 0.8), 0 0 ${randomSize * 12}px rgba(192, 192, 192, 0.5)`,
+        }}
+      />
+      {/* 十字の輝き */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        animate={{
+          rotate: [0, 90, 180, 270, 360],
+        }}
+        transition={{
+          duration: 4,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+      >
+        <div
+          className="bg-white"
+          style={{
+            width: `${randomSize * 5}px`,
+            height: `${randomSize * 0.6}px`,
+            boxShadow: `0 0 ${randomSize * 3}px rgba(255, 255, 255, 1), 0 0 ${randomSize * 5}px rgba(255, 255, 255, 0.6)`,
+          }}
+        />
+        <div
+          className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: `${randomSize * 0.6}px`,
+            height: `${randomSize * 5}px`,
+            boxShadow: `0 0 ${randomSize * 3}px rgba(255, 255, 255, 1), 0 0 ${randomSize * 5}px rgba(255, 255, 255, 0.6)`,
+          }}
+        />
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -167,28 +369,25 @@ export function SuccessScreen({
           <div className="content-stretch flex gap-[10px] items-center px-[48px] py-[16px] relative w-full">
             {/* Overlay */}
             <div className="-translate-x-1/2 -translate-y-1/2 absolute bg-[rgba(242,246,249,0.6)] blur-[4px] left-1/2 size-[326px] top-[calc(50%+0.5px)]" data-name="overlay" />
-            {/* 紙吹雪エフェクト */}
+            
+            {/* 大きな流れ星（左上から右中央へ） */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {Array.from({ length: 60 }).map((_, i) => (
-                <Confetti key={i} delay={i * 0.03} />
+              {Array.from({ length: 3 }).map((_, i) => (
+                <LargeShootingStar key={`large-${i}`} delay={i * 1.2} />
+              ))}
+            </div>
+            
+            {/* 流れ星エフェクト（画面全体） */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {Array.from({ length: 15 }).map((_, i) => (
+                <ShootingStar key={`shooting-${i}`} delay={i * 0.3} />
               ))}
             </div>
 
-            {/* バーストエフェクト */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-              {Array.from({ length: 24 }).map((_, i) => (
-                <BurstParticle
-                  key={i}
-                  delay={0.1}
-                  angle={i * 15}
-                />
-              ))}
-            </div>
-
-            {/* 波紋エフェクト */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Ripple key={i} delay={i * 0.15} />
+            {/* キラキラ輝く小さな星 */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {Array.from({ length: 30 }).map((_, i) => (
+                <TwinkleStar key={`twinkle-${i}`} delay={i * 0.15} />
               ))}
             </div>
 
@@ -213,63 +412,10 @@ export function SuccessScreen({
                   times: [0, 0.5, 0.7, 0.85, 1],
                 }}
               >
-                <div className="relative">
-                  {/* グロー効果 */}
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-[#28D87C] blur-xl"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{
-                      opacity: [0, 0.6, 0.3],
-                      scale: [0.8, 1.3, 1.2],
-                    }}
-                    transition={{
-                      duration: 1,
-                      ease: "easeOut",
-                    }}
-                  />
-
-                  <CheckCircle
-                    className="w-[80px] h-[80px] text-[#28D87C] relative"
-                    strokeWidth={2}
-                  />
-
-                  {/* キラキラエフェクト */}
-                  <motion.div
-                    className="absolute -top-2 -right-2"
-                    initial={{ scale: 0, rotate: 0 }}
-                    animate={{
-                      scale: [0, 1, 0.8],
-                      rotate: [0, 180, 360],
-                    }}
-                    transition={{
-                      duration: 1,
-                      delay: 0.4,
-                    }}
-                  >
-                    <Sparkles
-                      className="w-6 h-6 text-[#FFD700]"
-                      fill="#FFD700"
-                    />
-                  </motion.div>
-
-                  <motion.div
-                    className="absolute -bottom-1 -left-1"
-                    initial={{ scale: 0, rotate: 0 }}
-                    animate={{
-                      scale: [0, 1, 0.8],
-                      rotate: [0, -180, -360],
-                    }}
-                    transition={{
-                      duration: 1,
-                      delay: 0.6,
-                    }}
-                  >
-                    <Sparkles
-                      className="w-5 h-5 text-[#A6FFCB]"
-                      fill="#A6FFCB"
-                    />
-                  </motion.div>
-                </div>
+                <BadgeCheck
+                  className="w-[80px] h-[80px]"
+                  strokeWidth={3.5}
+                />
               </motion.div>
 
               {/* メッセージ（フェードイン） */}
