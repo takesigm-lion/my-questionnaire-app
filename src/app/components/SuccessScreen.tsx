@@ -155,7 +155,7 @@ function ShootingStar({
           transition={{
             duration: duration,
             delay: delay + star.delayOffset, // 0.15秒ずつ遅れて追従
-            ease: [0.25, 0.1, 0.25, 1],
+            ease: "linear",
             repeat: Infinity,
             repeatDelay: 4,
           }}
@@ -209,7 +209,7 @@ function ShootingStar({
         transition={{
           duration: duration,
           delay: delay,
-          ease: [0.25, 0.1, 0.25, 1],
+          ease: "linear",
           repeat: Infinity,
           repeatDelay: 4,
         }}
@@ -326,7 +326,7 @@ export function SuccessScreen({
           startLeft="-5%"
           pathX={[0, 100, 220, 340]}
           pathY={[0, 60, 160, 300]}
-          duration={2.8}
+          duration={0.5}
           delay={1.5}
           starId={1}
         />
@@ -336,7 +336,7 @@ export function SuccessScreen({
           startLeft="40%"
           pathX={[0, 80, 140, 180]}
           pathY={[0, 90, 180, 260]}
-          duration={3.2}
+          duration={1.2}
           delay={2.1}
           starId={2}
         />
@@ -346,7 +346,7 @@ export function SuccessScreen({
           startLeft="95%"
           pathX={[0, -70, -160, -260]}
           pathY={[0, 100, 200, 320]}
-          duration={2.6}
+          duration={0.6}
           delay={4.0}
           starId={3}
         />
